@@ -10,4 +10,4 @@ import Button from "./components/Button/Button.vue";
   <Button type="danger" disabled>Danger</Button>
 </template>
 
-<style scoped></style>
+<style></style>
