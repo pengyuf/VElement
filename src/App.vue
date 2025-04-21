@@ -3,6 +3,7 @@ import { ref } from "vue";
 import Button from "./components/Button/Button.vue";
 import Collapse from "./components/Collapse/Collapse.vue";
 import CollapseItem from "./components/Collapse/CollapseItem.vue";
+import Icon from "./components/Icon/Icon.vue";
 
 const openedValue = ref(["a"]);
 </script>
@@ -14,6 +15,8 @@ const openedValue = ref(["a"]);
     <Button type="info">Info</Button>
     <Button type="warning">Warning</Button>
     <Button type="danger" disabled>Danger</Button>
+    <Button type="danger" loading>loading</Button>
+    <Button type="danger" icon="arrow-up">loading</Button>
   </div>
   <div>
     <Collapse v-model="openedValue" accordion>
@@ -30,6 +33,9 @@ const openedValue = ref(["a"]);
         <div>this is cccc test</div>
       </CollapseItem>
     </Collapse>
+  </div>
+  <div>
+    <Icon icon="user-secret" type="warning" color="red" />
   </div>
 </template>
 
