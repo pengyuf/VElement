@@ -4,6 +4,7 @@ import Button from "./components/Button/Button.vue";
 import Collapse from "./components/Collapse/Collapse.vue";
 import CollapseItem from "./components/Collapse/CollapseItem.vue";
 import Icon from "./components/Icon/Icon.vue";
+import Tooltip from "./components/Tooltip/Tooltip.vue";
 
 const openedValue = ref(["a"]);
 </script>
@@ -36,6 +37,14 @@ const openedValue = ref(["a"]);
   </div>
   <div>
     <Icon icon="user-secret" type="warning" color="red" />
+  </div>
+  <div>
+    <Tooltip placement="bottom" content="bottom">
+      <Button type="primary">Tooltip</Button>
+      <!-- <template #content>
+        <div>this is content</div>
+      </template> -->
+    </Tooltip>
   </div>
 </template>
 
