@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { reactive, ref, h } from "vue";
 import Button from "./components/Button/Button.vue";
 import Collapse from "./components/Collapse/Collapse.vue";
 import CollapseItem from "./components/Collapse/CollapseItem.vue";
 import Icon from "./components/Icon/Icon.vue";
 import Tooltip from "./components/Tooltip/Tooltip.vue";
+import Dropdown from "./components/Dropdown/Dropdown.vue";
 
 const openedValue = ref(["a"]);
+const menuOptions = [
+  { label: h('div', 'vnode option'), key: '1' },
+  { label: 'Option 2', key: '2' },
+  { label: 'Option 3', key: '3' },
+  { label: 'Option 4', key: '4', divided: true },
+  { label: 'Option 5', key: '5', disabled: true },
+]
 </script>
 
 <template>
@@ -41,10 +49,12 @@ const openedValue = ref(["a"]);
   <div>
     <Tooltip placement="bottom" content="bottom">
       <Button type="primary">Tooltip</Button>
-      <!-- <template #content>
-        <div>this is content</div>
-      </template> -->
     </Tooltip>
+  </div>
+  <div>
+    <Dropdown placement="bottom" :menu-options="menuOptions">
+      <Button type="primary">Dropdown</Button>
+    </Dropdown>
   </div>
 </template>
 
