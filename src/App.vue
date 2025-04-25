@@ -6,6 +6,7 @@ import CollapseItem from "./components/Collapse/CollapseItem.vue";
 import Icon from "./components/Icon/Icon.vue";
 import Tooltip from "./components/Tooltip/Tooltip.vue";
 import Dropdown from "./components/Dropdown/Dropdown.vue";
+import Alert from "./components/Alert/Alert.vue";
 
 const openedValue = ref(["a"]);
 const menuOptions = [
@@ -55,6 +56,15 @@ const menuOptions = [
     <Dropdown placement="bottom" :menu-options="menuOptions">
       <Button type="primary">Dropdown</Button>
     </Dropdown>
+  </div>
+  <div>
+    <Alert title="alert info" />
+    <Alert title="dark主题" type="success" effect="dark" />
+    <Alert title="不可关闭" type="warning" :closable="false" />
+    <Alert title="自定义关闭按钮" type="error" effect="dark" close-text="关闭" />
+    <Alert title="展示图标" show-icon />
+    <Alert title="文字居中" show-icon center />
+    <Alert title="文字描述" description="这是描述字段" show-icon />
   </div>
 </template>
 

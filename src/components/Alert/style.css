@@ -1,0 +1,65 @@
+.vk-alert {
+  position: relative;
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-radius: var(--vk-border-radius-base);
+  box-sizing: border-box;
+  transition: opacity 0.2s;
+}
+
+.vk-alert__icon {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.vk-alert__content {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 18px;
+}
+
+.vk-alert__title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.vk-alert__description {
+  font-size: 14px;
+  margin: 5px 0 0;
+}
+
+.vk-alert__close-btn {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+
+@each $val in success, warning, info, error {
+  /* Light effect */
+  .vk-alert.is-light.vk-alert--$(val){
+    background-color: var(--vk-color-$(val)-light-9);
+    border-color: var(--vk-color-$(val)-light-7);
+    color: var(--vk-color-$(val));
+  }
+
+  /* Dark effect */
+  .vk-alert.is-dark.vk-alert--$(val) {
+    background-color: var(--vk-color-$(val));
+    border-color: var(--vk-color-$(val));
+    color: var(--vk-color-white);
+  }
+}
+
+
+
+/* Center alignment */
+.vk-alert.is-center {
+  text-align: center;
+}
+
+.vk-alert.is-center .vk-alert__content {
+  display: block;
+}
