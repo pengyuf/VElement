@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref, h } from "vue";
+import { reactive, ref, h, onMounted } from "vue";
 import Button from "./components/Button/Button.vue";
 import Collapse from "./components/Collapse/Collapse.vue";
 import CollapseItem from "./components/Collapse/CollapseItem.vue";
@@ -7,6 +7,7 @@ import Icon from "./components/Icon/Icon.vue";
 import Tooltip from "./components/Tooltip/Tooltip.vue";
 import Dropdown from "./components/Dropdown/Dropdown.vue";
 import Alert from "./components/Alert/Alert.vue";
+import { createMessage } from "./components/Message/method";
 
 const openedValue = ref(["a"]);
 const menuOptions = [
@@ -16,6 +17,20 @@ const menuOptions = [
   { label: 'Option 4', key: '4', divided: true },
   { label: 'Option 5', key: '5', disabled: true },
 ]
+
+onMounted(() => {
+  createMessage({
+    message: 'hello world',
+    type: 'info',
+    duration: 0,
+  })
+  createMessage({
+    message: 'hello world 22222',
+    type: 'info',
+    duration: 3000,
+  })
+})
+
 </script>
 
 <template>
