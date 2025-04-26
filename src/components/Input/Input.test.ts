@@ -8,6 +8,7 @@ describe('Input', () => {
       props: {
         size: 'small',
         type: 'text',
+        modelValue: ''
       },
       slots: {
         prepend: 'prepend',
@@ -25,5 +26,25 @@ describe('Input', () => {
     expect(wrapper.get('.vk-input__prepend').text()).toBe('prepend')
     expect(wrapper.find('.vk-input__prefix').exists()).toBeTruthy()
     expect(wrapper.get('.vk-input__prefix').text()).toBe('prefix')
+  })
+
+  it('支持 v-model', async () => {
+    const wrapper = mount(Input, {
+      props: {
+        type: 'text',
+        modelValue: 'test',
+// 由于不清楚具体类型，这里假设为 string 类型，可根据实际情况修改
+'onUpdate:modelValue': (e: string) => wrapper.setProps({ modelValue: e }),
+      },
+    })
+    const input = wrapper.get('input')
+    expect(input.element.value).toBe('test')
+
+    await input.setValue('update')
+    expect(wrapper.props('modelValue')).toBe('update')
+    expect(input.element.value).toBe('update')
+
+    await wrapper.setProps({ modelValue: 'prop update' })
+    expect(input.element.value).toBe('prop update')
   })
 })
