@@ -33,8 +33,7 @@ describe('Input', () => {
       props: {
         type: 'text',
         modelValue: 'test',
-// 由于不清楚具体类型，这里假设为 string 类型，可根据实际情况修改
-'onUpdate:modelValue': (e: string) => wrapper.setProps({ modelValue: e }),
+        'onUpdate:modelValue': (e: string) => wrapper.setProps({ modelValue: e }),
       },
     })
     const input = wrapper.get('input')
