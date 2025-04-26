@@ -22,12 +22,18 @@ onMounted(() => {
   createMessage({
     message: 'hello world',
     type: 'info',
-    duration: 0,
+    duration: 3000,
   })
   createMessage({
     message: 'hello world 22222',
+    duration: 0,
+    showClose: true,
+    type: 'success',
+  })
+  createMessage({
+    message: 'hello world 333333333',
     type: 'info',
-    duration: 3000,
+    duration: 0,
   })
 })
 
