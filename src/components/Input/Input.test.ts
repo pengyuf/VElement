@@ -65,4 +65,27 @@ describe('Input', () => {
     await wrapper.get('.vk-input__clear').trigger('click')
     expect(input.element.value).toBe('')
   })
+
+  it('切换密码显示', async () => {
+    const wrapper = mount(Input, {
+      props: {
+        type: 'text',
+        modelValue: '',
+        showPassword: true,
+      },
+      global: {
+        stubs: ['Icon']
+      }
+    })
+    expect(wrapper.find('.vk-input__password').exists()).toBeFalsy()
+    const input = wrapper.get('input')
+    expect(input.element.type).toBe('password')
+    await input.setValue('123')
+    const eyeIcon = wrapper.find('.vk-input__password')
+    expect(eyeIcon.exists()).toBeTruthy()
+    expect(eyeIcon.attributes('icon')).toBe('eye-slash')
+    await eyeIcon.trigger('click')
+    expect(input.element.type).toBe('text')
+    expect(wrapper.find('.vk-input__password').attributes('icon')).toBe('eye')
+  })
 })

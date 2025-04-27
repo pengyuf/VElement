@@ -20,11 +20,14 @@
         <span v-if="$slots.prefix" class="vk-input__prefix">
           <slot name="prefix" />
         </span>
-        <input v-model="innerValue" @input="handleInput" @focus="handleFocus" @blur="handleBlur" class="vk-input__inner" :type="type" :disabled="disabled" />
+        <input :type="showPassword ? (showPasswordVisible ? 'text' : 'password') : type" :disabled="disabled"
+          v-model="innerValue" @input="handleInput" @focus="handleFocus" @blur="handleBlur" class="vk-input__inner" />
         <!-- suffix slot -->
-        <span v-if="$slots.suffix || showClear" class="vk-input__suffix">
+        <span v-if="$slots.suffix || showClear || showPasswordArea" class="vk-input__suffix">
           <slot name="suffix" />
           <Icon v-if="showClear" class="vk-input__clear" icon="circle-xmark" @click="clear" />
+          <Icon @click="togglePasswordVisible" v-if="showPasswordArea && showPasswordVisible" class="vk-input__password" icon="eye" />
+          <Icon @click="togglePasswordVisible" v-if="showPasswordArea && !showPasswordVisible" class="vk-input__password" icon="eye-slash" />
         </span>
       </div>
       <!-- append -->
@@ -34,7 +37,8 @@
     </template>
     <!-- textarea -->
     <template v-else>
-      <textarea v-model="innerValue" @input="handleInput" @focus="handleFocus" @blur="handleBlur" class="vk-textarea__wrapper" :disabled="disabled" />
+      <textarea v-model="innerValue" @input="handleInput" @focus="handleFocus" @blur="handleBlur"
+        class="vk-textarea__wrapper" :disabled="disabled" />
     </template>
   </div>
 </template>
@@ -54,9 +58,13 @@ const emits = defineEmits<InputEmits>()
 
 const innerValue = ref(props.modelValue)
 const isFocus = ref(false)
+const showPasswordVisible = ref(false)
 
 const showClear = computed(() => {
   return props.clearable && !props.disabled && !!innerValue.value && isFocus.value
+})
+const showPasswordArea = computed(() => {
+  return props.showPassword && !props.disabled && !!innerValue.value
 })
 
 watch(() => props.modelValue, (val) => {
@@ -73,8 +81,12 @@ const handleBlur = () => {
   isFocus.value = false
 }
 
-const clear = ()=>{
+const clear = () => {
   innerValue.value = ''
   emits('update:modelValue', '')
+}
+
+const togglePasswordVisible = () => {
+  showPasswordVisible.value = !showPasswordVisible.value
 }
 </script>
