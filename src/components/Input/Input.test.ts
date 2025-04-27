@@ -46,4 +46,23 @@ describe('Input', () => {
     await wrapper.setProps({ modelValue: 'prop update' })
     expect(input.element.value).toBe('prop update')
   })
+
+  it('支持点击清空', async () => {
+    const wrapper = mount(Input, {
+      props: {
+        type: 'text',
+        modelValue: 'test',
+        clearable: true,
+      },
+      global: {
+        stubs: ['Icon']
+      }
+    })
+    expect(wrapper.find('.vk-input__clear').exists()).toBeFalsy()
+    const input = wrapper.get('input')
+    await input.trigger('focus')
+    expect(wrapper.find('.vk-input__clear').exists()).toBeTruthy()
+    await wrapper.get('.vk-input__clear').trigger('click')
+    expect(input.element.value).toBe('')
+  })
 })
