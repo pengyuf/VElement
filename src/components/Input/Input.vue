@@ -20,9 +20,10 @@
         <span v-if="$slots.prefix" class="vk-input__prefix">
           <slot name="prefix" />
         </span>
-        <input :type="showPassword ? (showPasswordVisible ? 'text' : 'password') : type" :disabled="disabled"
-          v-model="innerValue" @change="handleChange" @input="handleInput" @focus="handleFocus" @blur="handleBlur"
-          class="vk-input__inner" />
+        <input ref="inputRef" :type="showPassword ? (showPasswordVisible ? 'text' : 'password') : type"
+          v-model="innerValue" v-bind="attr" :disabled="disabled" :placeholder="placeholder" :readonly="readonly"
+          :autocomplete="autocomplete" :autofocus="autofocus" :form="form" @change="handleChange" @input="handleInput"
+          @focus="handleFocus" @blur="handleBlur" class="vk-input__inner" />
         <!-- suffix slot -->
         <span v-if="$slots.suffix || showClear || showPasswordArea" class="vk-input__suffix">
           <slot name="suffix" />
@@ -40,23 +41,29 @@
     </template>
     <!-- textarea -->
     <template v-else>
-      <textarea v-model="innerValue" @change="handleChange" @input="handleInput" @focus="handleFocus" @blur="handleBlur"
-        class="vk-textarea__wrapper" :disabled="disabled" />
+      <textarea ref="inputRef" v-model="innerValue" v-bind="attr" :disabled="disabled" :placeholder="placeholder"
+        :readonly="readonly" :autocomplete="autocomplete" :autofocus="autofocus" :form="form" @change="handleChange"
+        @input="handleInput" @focus="handleFocus" @blur="handleBlur" class="vk-textarea__wrapper" />
     </template>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
+import { computed, ref, useAttrs, watch, type Ref } from "vue";
 import type { InputProps, InputEmits } from "./types";
 import Icon from "../Icon/Icon.vue"
 defineOptions({
-  name: 'VKInput'
+  name: 'VKInput',
+  inheritAttrs: false,
 })
+
+const attr = useAttrs()
+
+const inputRef = ref() as Ref<HTMLInputElement>
 
 const props = withDefaults(defineProps<InputProps>(), {
   type: 'text',
-  autocomplete:'off'
+  autocomplete: 'off'
 })
 const emits = defineEmits<InputEmits>()
 
@@ -104,4 +111,8 @@ const clear = () => {
 const togglePasswordVisible = () => {
   showPasswordVisible.value = !showPasswordVisible.value
 }
+
+defineExpose({
+  ref: inputRef
+})
 </script>
