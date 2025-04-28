@@ -55,7 +55,8 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<InputProps>(), {
-  type: 'text'
+  type: 'text',
+  autocomplete:'off'
 })
 const emits = defineEmits<InputEmits>()
 
