@@ -9,4 +9,9 @@ export interface InputProps {
 
 export interface InputEmits {
   (e: 'update:modelValue', value: string): void
+  (e:'input',value:string):void
+  (e:'change',value:string):void
+  (e:'clear'):void
+  (e:'focus',event:FocusEvent):void
+  (e:'blur',event:FocusEvent):void
 }

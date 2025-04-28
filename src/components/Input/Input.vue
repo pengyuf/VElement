@@ -21,13 +21,16 @@
           <slot name="prefix" />
         </span>
         <input :type="showPassword ? (showPasswordVisible ? 'text' : 'password') : type" :disabled="disabled"
-          v-model="innerValue" @input="handleInput" @focus="handleFocus" @blur="handleBlur" class="vk-input__inner" />
+          v-model="innerValue" @change="handleChange" @input="handleInput" @focus="handleFocus" @blur="handleBlur"
+          class="vk-input__inner" />
         <!-- suffix slot -->
         <span v-if="$slots.suffix || showClear || showPasswordArea" class="vk-input__suffix">
           <slot name="suffix" />
           <Icon v-if="showClear" class="vk-input__clear" icon="circle-xmark" @click="clear" />
-          <Icon @click="togglePasswordVisible" v-if="showPasswordArea && showPasswordVisible" class="vk-input__password" icon="eye" />
-          <Icon @click="togglePasswordVisible" v-if="showPasswordArea && !showPasswordVisible" class="vk-input__password" icon="eye-slash" />
+          <Icon @click="togglePasswordVisible" v-if="showPasswordArea && showPasswordVisible" class="vk-input__password"
+            icon="eye" />
+          <Icon @click="togglePasswordVisible" v-if="showPasswordArea && !showPasswordVisible"
+            class="vk-input__password" icon="eye-slash" />
         </span>
       </div>
       <!-- append -->
@@ -37,7 +40,7 @@
     </template>
     <!-- textarea -->
     <template v-else>
-      <textarea v-model="innerValue" @input="handleInput" @focus="handleFocus" @blur="handleBlur"
+      <textarea v-model="innerValue" @change="handleChange" @input="handleInput" @focus="handleFocus" @blur="handleBlur"
         class="vk-textarea__wrapper" :disabled="disabled" />
     </template>
   </div>
@@ -73,17 +76,28 @@ watch(() => props.modelValue, (val) => {
 
 const handleInput = () => {
   emits('update:modelValue', innerValue.value)
+  emits('input', innerValue.value)
 }
-const handleFocus = () => {
+
+const handleChange = () => {
+  emits('change', innerValue.value)
+}
+
+const handleFocus = (event: FocusEvent) => {
   isFocus.value = true
+  emits('focus', event)
 }
-const handleBlur = () => {
+const handleBlur = (event: FocusEvent) => {
   isFocus.value = false
+  emits('blur', event)
 }
 
 const clear = () => {
   innerValue.value = ''
   emits('update:modelValue', '')
+  emits('clear')
+  emits('change', '')
+  emits('input', '')
 }
 
 const togglePasswordVisible = () => {
