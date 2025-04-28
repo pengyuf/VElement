@@ -25,9 +25,9 @@
           :autocomplete="autocomplete" :autofocus="autofocus" :form="form" @change="handleChange" @input="handleInput"
           @focus="handleFocus" @blur="handleBlur" class="vk-input__inner" />
         <!-- suffix slot -->
-        <span v-if="$slots.suffix || showClear || showPasswordArea" class="vk-input__suffix">
+        <span v-if="$slots.suffix || showClear || showPasswordArea" class="vk-input__suffix" @click="keepFocus">
           <slot name="suffix" />
-          <Icon v-if="showClear" class="vk-input__clear" icon="circle-xmark" @click="clear" />
+          <Icon v-if="showClear" class="vk-input__clear" icon="circle-xmark" @click="clear" @mousedown.prevent="NOOP" />
           <Icon @click="togglePasswordVisible" v-if="showPasswordArea && showPasswordVisible" class="vk-input__password"
             icon="eye" />
           <Icon @click="togglePasswordVisible" v-if="showPasswordArea && !showPasswordVisible"
@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, useAttrs, watch, type Ref } from "vue";
+import { computed, nextTick, ref, useAttrs, watch, type Ref } from "vue";
 import type { InputProps, InputEmits } from "./types";
 import Icon from "../Icon/Icon.vue"
 defineOptions({
@@ -71,6 +71,8 @@ const innerValue = ref(props.modelValue)
 const isFocus = ref(false)
 const showPasswordVisible = ref(false)
 
+const NOOP = () => {}
+
 const showClear = computed(() => {
   return props.clearable && !props.disabled && !!innerValue.value && isFocus.value
 })
@@ -81,6 +83,11 @@ const showPasswordArea = computed(() => {
 watch(() => props.modelValue, (val) => {
   innerValue.value = val
 })
+
+const keepFocus = async ()=>{
+   await nextTick()
+   inputRef.value?.focus()
+}
 
 const handleInput = () => {
   emits('update:modelValue', innerValue.value)

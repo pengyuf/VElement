@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref, h, onMounted } from "vue";
+import { ref, h, onMounted } from "vue";
 import Button from "./components/Button/Button.vue";
 import Collapse from "./components/Collapse/Collapse.vue";
 import CollapseItem from "./components/Collapse/CollapseItem.vue";
@@ -7,7 +7,10 @@ import Icon from "./components/Icon/Icon.vue";
 import Tooltip from "./components/Tooltip/Tooltip.vue";
 import Dropdown from "./components/Dropdown/Dropdown.vue";
 import Alert from "./components/Alert/Alert.vue";
+import Input from "./components/Input/Input.vue";
 import { createMessage } from "./components/Message/method";
+
+const inputValue = ref("test");
 
 const openedValue = ref(["a"]);
 const menuOptions = [
@@ -86,6 +89,9 @@ onMounted(() => {
     <Alert title="展示图标" show-icon />
     <Alert title="文字居中" show-icon center />
     <Alert title="文字描述" description="这是描述字段" show-icon />
+  </div>
+  <div>
+    <Input type="text" placeholder="请输入" v-model="inputValue" />
   </div>
 </template>
 
