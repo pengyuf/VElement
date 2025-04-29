@@ -2,7 +2,7 @@
   <div class="vk-select" :class="{
     'is-disabled': disabled,
   }" @click="toggleDropdown">
-    <Tooltip placement="bottom-start" manual ref="toolTipRef">
+    <Tooltip placement="bottom-start" manual ref="toolTipRef" :popper-options="popperOptions">
       <Input type="text" v-model="states.inputValue" :disabled="disabled" :placeholder="placeholder" />
       <template #content>
         <ul class="vk-select__menu">
@@ -34,6 +34,28 @@ defineOptions({
 const findOption = (value: string) => {
   const option = props.options.find(item => item.value === value)
   return option || null
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const popperOptions: any = {
+  modifiers: [
+    {
+      name: 'offset',
+      options: {
+        offset: [0, 9],
+      },
+    },
+    {
+      name: "sameWidth",
+      enabled: true,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      fn: ({ state }: { state: any }) => {
+        state.styles.popper.width = `${state.rects.reference.width}px`;
+      },
+      phase: "beforeWrite",
+      requires: ["computeStyles"],
+    }
+  ],
 }
 
 const props = defineProps<SelectProps>()

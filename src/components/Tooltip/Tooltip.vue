@@ -37,7 +37,9 @@ const triggerNode = ref<HTMLElement>()
 const popperNode = ref<HTMLElement>()
 const popperContainerNode = ref<HTMLElement>()
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let events: Record<string, any> = reactive({})
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let outEvents: Record<string, any> = reactive({})
 const popperOptions = computed(() => {
   // 这样做的目的是将组件传入的 `popperOptions` 与固定的 `placement` 属性合并，作为最终的 popper 配置选项。
