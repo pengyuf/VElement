@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, h, onMounted } from "vue";
+
+import type { SelectOption } from "./components/Select/types";
+
 import Button from "./components/Button/Button.vue";
 import Collapse from "./components/Collapse/Collapse.vue";
 import CollapseItem from "./components/Collapse/CollapseItem.vue";
@@ -9,10 +12,19 @@ import Dropdown from "./components/Dropdown/Dropdown.vue";
 import Alert from "./components/Alert/Alert.vue";
 import Input from "./components/Input/Input.vue";
 import Switch from "./components/Switch/Switch.vue";
+import Select from "./components/Select/Select.vue";
 import { createMessage } from "./components/Message/method";
 
 const inputValue = ref("test");
 const switchValue = ref(false);
+const selectValue = ref("");
+
+const selectOptions: SelectOption[] = [
+  { label: "Option 1", value: "1" },
+  { label: "Option 2", value: "2" },
+  { label: "Option 3", value: "3" },
+  { label: "Option disabled", value: "3", disabled: true },
+]
 
 const openedValue = ref(["a"]);
 const menuOptions = [
@@ -98,6 +110,9 @@ onMounted(() => {
   <div>
     <Switch v-model="switchValue" />
     <Switch v-model="switchValue" active-text="on" inactive-text="off" />
+  </div>
+  <div>
+    <Select placeholder="请输入" v-model="selectValue" :options="selectOptions" />
   </div>
 </template>
 
