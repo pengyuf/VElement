@@ -20,7 +20,7 @@
 import type { MessageProps } from './types'
 import Icon from '../Icon/Icon.vue'
 import RenderVnode from '../Common/RenderVnode';
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { getLastBottomOffset } from './method'
 import useEventListener from '@/hooks/useEventListener';
 

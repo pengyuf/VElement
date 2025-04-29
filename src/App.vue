@@ -8,9 +8,11 @@ import Tooltip from "./components/Tooltip/Tooltip.vue";
 import Dropdown from "./components/Dropdown/Dropdown.vue";
 import Alert from "./components/Alert/Alert.vue";
 import Input from "./components/Input/Input.vue";
+import Switch from "./components/Switch/Switch.vue";
 import { createMessage } from "./components/Message/method";
 
 const inputValue = ref("test");
+const switchValue = ref(false);
 
 const openedValue = ref(["a"]);
 const menuOptions = [
@@ -92,6 +94,10 @@ onMounted(() => {
   </div>
   <div>
     <Input type="text" placeholder="请输入" v-model="inputValue" />
+  </div>
+  <div>
+    <Switch v-model="switchValue" />
+    <Switch v-model="switchValue" active-text="on" inactive-text="off" />
   </div>
 </template>
 
