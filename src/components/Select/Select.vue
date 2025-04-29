@@ -3,13 +3,16 @@
     'is-disabled': disabled,
   }" @click="toggleDropdown">
     <Tooltip placement="bottom-start" manual ref="toolTipRef">
-      <Input type="text" v-model="innerValue" :disabled="disabled" :placeholder="placeholder" />
+      <Input type="text" v-model="states.inputValue" :disabled="disabled" :placeholder="placeholder" />
       <template #content>
         <ul class="vk-select__menu">
           <template v-for="(item, index) in options" :key="index">
             <li class="vk-select__menu-item" :class="{
               'is-disabled': item.disabled,
-            }" :id="`select-item-${item.value}`" @click.stop="itemSelect(item)">{{ item.label }}</li>
+              'is-selected': states.selectedOption?.value === item.value,
+            }" :id="`select-item-${item.value}`" @click.stop="itemSelect(item)">
+              {{ item.label }}
+            </li>
           </template>
         </ul>
       </template>
@@ -17,12 +20,12 @@
   </div>
 </template>
 <script lang="ts" setup>
-import type { SelectEmits, SelectOption, SelectProps } from './types'
+import type { SelectEmits, SelectOption, SelectProps, SelectStates } from './types'
 import type { TooltipInstance } from '../Tooltip/types'
 import Input from '../Input/Input.vue';
 import Tooltip from '../Tooltip/Tooltip.vue';
 
-import { ref, type Ref } from 'vue';
+import { reactive, ref, type Ref } from 'vue';
 
 defineOptions({
   name: 'VkSelect'
@@ -39,8 +42,10 @@ const initalOption = findOption(props.modelValue)
 
 const emits = defineEmits<SelectEmits>()
 
-const innerValue = ref(initalOption ? initalOption.label : '')
-
+const states = reactive<SelectStates>({
+  inputValue: initalOption ? initalOption.label : '',
+  selectedOption: initalOption
+})
 const toolTipRef = ref() as Ref<TooltipInstance>
 
 const isDropdownShow = ref(false)
@@ -66,7 +71,8 @@ const toggleDropdown = () => {
 
 const itemSelect = (e: SelectOption) => {
   if (e.disabled) return
-  innerValue.value = e.label
+  states.selectedOption = e
+  states.inputValue = e.label
   emits('update:modelValue', e.value)
   emits('change', e.value)
   controlDropdown(false)
