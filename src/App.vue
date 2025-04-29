@@ -17,7 +17,7 @@ import { createMessage } from "./components/Message/method";
 
 const inputValue = ref("test");
 const switchValue = ref(false);
-const selectValue = ref("");
+const selectValue = ref("1");
 
 const selectOptions: SelectOption[] = [
   { label: "Option 1", value: "1" },

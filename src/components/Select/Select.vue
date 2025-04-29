@@ -9,7 +9,7 @@
           <template v-for="(item, index) in options" :key="index">
             <li class="vk-select__menu-item" :class="{
               'is-disabled': item.disabled,
-            }" :id="`select-item-${item.value}`">{{ item.label }}</li>
+            }" :id="`select-item-${item.value}`" @click.stop="itemSelect(item)">{{ item.label }}</li>
           </template>
         </ul>
       </template>
@@ -17,7 +17,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import type { SelectEmits, SelectProps } from './types'
+import type { SelectEmits, SelectOption, SelectProps } from './types'
 import type { TooltipInstance } from '../Tooltip/types'
 import Input from '../Input/Input.vue';
 import Tooltip from '../Tooltip/Tooltip.vue';
@@ -28,11 +28,18 @@ defineOptions({
   name: 'VkSelect'
 })
 
+const findOption = (value: string) => {
+  const option = props.options.find(item => item.value === value)
+  return option || null
+}
+
 const props = defineProps<SelectProps>()
+
+const initalOption = findOption(props.modelValue)
 
 const emits = defineEmits<SelectEmits>()
 
-const innerValue = ref('')
+const innerValue = ref(initalOption ? initalOption.label : '')
 
 const toolTipRef = ref() as Ref<TooltipInstance>
 
@@ -55,5 +62,13 @@ const toggleDropdown = () => {
   } else {
     controlDropdown(true)
   }
+}
+
+const itemSelect = (e: SelectOption) => {
+  if (e.disabled) return
+  innerValue.value = e.label
+  emits('update:modelValue', e.value)
+  emits('change', e.value)
+  controlDropdown(false)
 }
 </script>
