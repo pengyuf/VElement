@@ -4,8 +4,8 @@
   }" @click="toggleDropdown" @mouseenter="states.mouseHover = true" @mouseleave="states.mouseHover = false">
     <Tooltip placement="bottom-start" manual ref="toolTipRef" :popper-options="popperOptions"
       @click-outside="controlDropdown(false)">
-      <Input ref="inputRef" type="text" v-model="states.inputValue" :readonly="!filterable || !isDropdownShow" :disabled="disabled"
-        :placeholder="filteredPlaceholder" @input="onFilter">
+      <Input ref="inputRef" type="text" v-model="states.inputValue" :readonly="!filterable || !isDropdownShow"
+        :disabled="disabled" :placeholder="filteredPlaceholder" @input="onFilter">
       <template #suffix>
         <Icon v-if="showClearIcon" class="vk-input__clear" icon="circle-xmark" @mousedown.prevent="NOOP"
           @click="onClear" />
@@ -70,7 +70,9 @@ const popperOptions: any = {
   ],
 }
 
-const props = defineProps<SelectProps>()
+const props = withDefaults(defineProps<SelectProps>(), {
+  options: () => [],
+})
 
 const initalOption = findOption(props.modelValue)
 
@@ -85,7 +87,8 @@ watch(() => props.options, (newOptions) => {
 const states = reactive<SelectStates>({
   mouseHover: false,
   inputValue: initalOption ? initalOption.label : '',
-  selectedOption: initalOption
+  selectedOption: initalOption,
+  loading: false,
 })
 const toolTipRef = ref() as Ref<TooltipInstance>
 const inputRef = ref() as Ref<InputInstance>
@@ -148,11 +151,23 @@ const onClear = () => {
   emits('clear')
 }
 
-const generateFilterOptions = (searchValue: string) => {
+const generateFilterOptions = async (searchValue: string) => {
   if (!props.filterable) return
   if (props.filterMethod && isFunction(props.filterMethod)) {
     filteredOptions.value = props.filterMethod(searchValue)
-  } else {
+  }
+  else if (props.remote && props.remoteMethod && isFunction(props.remoteMethod)) {
+    states.loading = true
+    try {
+      filteredOptions.value = await props.remoteMethod(searchValue)
+    } catch (e) {
+      console.error(e)
+      filteredOptions.value = []
+    } finally {
+      states.loading = false
+    }
+  }
+  else {
     filteredOptions.value = props.options.filter(option => option.label.includes(searchValue))
   }
 }
