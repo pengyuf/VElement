@@ -7,7 +7,8 @@
       <Input ref="inputRef" type="text" v-model="states.inputValue" readonly :disabled="disabled"
         :placeholder="placeholder">
       <template #suffix>
-        <Icon v-if="showClearIcon" class="vk-input__clear" icon="circle-xmark" @mousedown.prevent="NOOP" @click="onClear" />
+        <Icon v-if="showClearIcon" class="vk-input__clear" icon="circle-xmark" @mousedown.prevent="NOOP"
+          @click="onClear" />
         <Icon v-else icon="angle-down" class="header-angle" :class="{ 'is-active': isDropdownShow }" />
       </template>
       </Input>
@@ -18,7 +19,7 @@
               'is-disabled': item.disabled,
               'is-selected': states.selectedOption?.value === item.value,
             }" :id="`select-item-${item.value}`" @click.stop="itemSelect(item)">
-              {{ item.label }}
+              <RenderVnode :vnode="renderLabel ? renderLabel(item) : item.label" />
             </li>
           </template>
         </ul>
@@ -33,6 +34,7 @@ import type { InputInstance } from '../Input/types'
 import Input from '../Input/Input.vue';
 import Tooltip from '../Tooltip/Tooltip.vue';
 import Icon from '../Icon/Icon.vue';
+import RenderVnode from "../Common/RenderVnode"
 
 import { computed, reactive, ref, type Ref } from 'vue';
 
