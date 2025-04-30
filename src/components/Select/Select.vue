@@ -4,8 +4,8 @@
   }" @click="toggleDropdown" @mouseenter="states.mouseHover = true" @mouseleave="states.mouseHover = false">
     <Tooltip placement="bottom-start" manual ref="toolTipRef" :popper-options="popperOptions"
       @click-outside="controlDropdown(false)">
-      <Input ref="inputRef" type="text" v-model="states.inputValue" readonly :disabled="disabled"
-        :placeholder="placeholder">
+      <Input ref="inputRef" type="text" v-model="states.inputValue" :readonly="!filterable || !isDropdownShow" :disabled="disabled"
+        :placeholder="filteredPlaceholder" @input="onFilter">
       <template #suffix>
         <Icon v-if="showClearIcon" class="vk-input__clear" icon="circle-xmark" @mousedown.prevent="NOOP"
           @click="onClear" />
@@ -14,7 +14,7 @@
       </Input>
       <template #content>
         <ul class="vk-select__menu">
-          <template v-for="(item, index) in options" :key="index">
+          <template v-for="(item, index) in filteredOptions" :key="index">
             <li class="vk-select__menu-item" :class="{
               'is-disabled': item.disabled,
               'is-selected': states.selectedOption?.value === item.value,
@@ -31,12 +31,13 @@
 import type { SelectEmits, SelectOption, SelectProps, SelectStates } from './types'
 import type { TooltipInstance } from '../Tooltip/types'
 import type { InputInstance } from '../Input/types'
+import { isFunction } from 'lodash-es'
 import Input from '../Input/Input.vue';
 import Tooltip from '../Tooltip/Tooltip.vue';
 import Icon from '../Icon/Icon.vue';
 import RenderVnode from "../Common/RenderVnode"
 
-import { computed, reactive, ref, type Ref } from 'vue';
+import { computed, reactive, ref, watch, type Ref } from 'vue';
 
 defineOptions({
   name: 'VkSelect'
@@ -75,6 +76,12 @@ const initalOption = findOption(props.modelValue)
 
 const emits = defineEmits<SelectEmits>()
 
+const filteredOptions = ref(props.options)
+
+watch(() => props.options, (newOptions) => {
+  filteredOptions.value = newOptions
+})
+
 const states = reactive<SelectStates>({
   mouseHover: false,
   inputValue: initalOption ? initalOption.label : '',
@@ -91,11 +98,24 @@ const showClearIcon = computed(() => {
 
 const NOOP = () => { }
 
+const filteredPlaceholder = computed(() => {
+  return (props.filterable && states.selectedOption && isDropdownShow.value) ? states.selectedOption.label : props.placeholder
+})
+
 const controlDropdown = (show: boolean) => {
   if (show) {
+    if (props.filterable && states.selectedOption) {
+      states.inputValue = ''
+    }
+    if (props.filterable) {
+      generateFilterOptions(states.inputValue)
+    }
     toolTipRef.value?.show()
   } else {
     toolTipRef.value?.hide()
+    if (props.filterable) {
+      states.inputValue = states.selectedOption ? states.selectedOption.label : ''
+    }
   }
   isDropdownShow.value = show
   emits('visible-change', show)
@@ -126,5 +146,18 @@ const onClear = () => {
   emits('update:modelValue', '')
   emits('change', '')
   emits('clear')
+}
+
+const generateFilterOptions = (searchValue: string) => {
+  if (!props.filterable) return
+  if (props.filterMethod && isFunction(props.filterMethod)) {
+    filteredOptions.value = props.filterMethod(searchValue)
+  } else {
+    filteredOptions.value = props.options.filter(option => option.label.includes(searchValue))
+  }
+}
+
+const onFilter = () => {
+  generateFilterOptions(states.inputValue)
 }
 </script>

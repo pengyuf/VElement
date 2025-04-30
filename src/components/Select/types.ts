@@ -7,6 +7,7 @@ export interface SelectOption {
 }
 
 export type RenderLabelFunc = (option: SelectOption) => VNode
+export type FilterOptionFunc = (value: string) => SelectOption[]
 
 export interface SelectProps {
   options: SelectOption[];
@@ -15,6 +16,8 @@ export interface SelectProps {
   disabled?: boolean;
   clearable?: boolean;
   renderLabel?: RenderLabelFunc;
+  filterable?: boolean;
+  filterMethod?: FilterOptionFunc;
 }
 
 export interface SelectStates {

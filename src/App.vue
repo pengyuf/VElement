@@ -17,13 +17,13 @@ import { createMessage } from "./components/Message/method";
 
 const inputValue = ref("test");
 const switchValue = ref(false);
-const selectValue = ref("1");
+const selectValue = ref("");
 
 const selectOptions: SelectOption[] = [
-  { label: "Option 1", value: "1" },
-  { label: "Option 2", value: "2" },
-  { label: "Option 3", value: "3" },
-  { label: "Option disabled", value: "4", disabled: true },
+  { label: "hello", value: "1" },
+  { label: "test", value: "2" },
+  { label: "dom", value: "3" },
+  { label: "it", value: "4", disabled: true },
 ]
 
 const openedValue = ref(["a"]);
@@ -112,7 +112,7 @@ onMounted(() => {
     <Switch v-model="switchValue" active-text="on" inactive-text="off" />
   </div>
   <div>
-    <Select placeholder="请输入" v-model="selectValue" clearable :options="selectOptions" />
+    <Select placeholder="请输入" v-model="selectValue" clearable :options="selectOptions" filterable />
   </div>
 </template>
 
