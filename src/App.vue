@@ -112,7 +112,7 @@ onMounted(() => {
     <Switch v-model="switchValue" active-text="on" inactive-text="off" />
   </div>
   <div>
-    <Select placeholder="请输入" v-model="selectValue" :options="selectOptions" />
+    <Select placeholder="请输入" v-model="selectValue" clearable :options="selectOptions" />
   </div>
 </template>
 

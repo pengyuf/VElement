@@ -1,13 +1,14 @@
 <template>
   <div class="vk-select" :class="{
     'is-disabled': disabled,
-  }" @click="toggleDropdown">
+  }" @click="toggleDropdown" @mouseenter="states.mouseHover = true" @mouseleave="states.mouseHover = false">
     <Tooltip placement="bottom-start" manual ref="toolTipRef" :popper-options="popperOptions"
       @click-outside="controlDropdown(false)">
       <Input ref="inputRef" type="text" v-model="states.inputValue" readonly :disabled="disabled"
         :placeholder="placeholder">
       <template #suffix>
-        <Icon icon="angle-down" class="header-angle" :class="{ 'is-active': isDropdownShow }" />
+        <Icon v-if="showClearIcon" class="vk-input__clear" icon="circle-xmark" @mousedown.prevent="NOOP" @click="onClear" />
+        <Icon v-else icon="angle-down" class="header-angle" :class="{ 'is-active': isDropdownShow }" />
       </template>
       </Input>
       <template #content>
@@ -33,7 +34,7 @@ import Input from '../Input/Input.vue';
 import Tooltip from '../Tooltip/Tooltip.vue';
 import Icon from '../Icon/Icon.vue';
 
-import { reactive, ref, type Ref } from 'vue';
+import { computed, reactive, ref, type Ref } from 'vue';
 
 defineOptions({
   name: 'VkSelect'
@@ -73,6 +74,7 @@ const initalOption = findOption(props.modelValue)
 const emits = defineEmits<SelectEmits>()
 
 const states = reactive<SelectStates>({
+  mouseHover: false,
   inputValue: initalOption ? initalOption.label : '',
   selectedOption: initalOption
 })
@@ -80,6 +82,12 @@ const toolTipRef = ref() as Ref<TooltipInstance>
 const inputRef = ref() as Ref<InputInstance>
 
 const isDropdownShow = ref(false)
+
+const showClearIcon = computed(() => {
+  return props.clearable && states.mouseHover && states.inputValue.trim() && states.selectedOption
+})
+
+const NOOP = () => { }
 
 const controlDropdown = (show: boolean) => {
   if (show) {
@@ -108,5 +116,13 @@ const itemSelect = (e: SelectOption) => {
   emits('change', e.value)
   controlDropdown(false)
   inputRef.value?.ref.focus()
+}
+
+const onClear = () => {
+  states.selectedOption = null
+  states.inputValue = ''
+  emits('update:modelValue', '')
+  emits('change', '')
+  emits('clear')
 }
 </script>
