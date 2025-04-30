@@ -2,8 +2,14 @@
   <div class="vk-select" :class="{
     'is-disabled': disabled,
   }" @click="toggleDropdown">
-    <Tooltip placement="bottom-start" manual ref="toolTipRef" :popper-options="popperOptions">
-      <Input type="text" v-model="states.inputValue" :disabled="disabled" :placeholder="placeholder" />
+    <Tooltip placement="bottom-start" manual ref="toolTipRef" :popper-options="popperOptions"
+      @click-outside="controlDropdown(false)">
+      <Input ref="inputRef" type="text" v-model="states.inputValue" readonly :disabled="disabled"
+        :placeholder="placeholder">
+      <template #suffix>
+        <Icon icon="angle-down" class="header-angle" :class="{ 'is-active': isDropdownShow }" />
+      </template>
+      </Input>
       <template #content>
         <ul class="vk-select__menu">
           <template v-for="(item, index) in options" :key="index">
@@ -22,8 +28,10 @@
 <script lang="ts" setup>
 import type { SelectEmits, SelectOption, SelectProps, SelectStates } from './types'
 import type { TooltipInstance } from '../Tooltip/types'
+import type { InputInstance } from '../Input/types'
 import Input from '../Input/Input.vue';
 import Tooltip from '../Tooltip/Tooltip.vue';
+import Icon from '../Icon/Icon.vue';
 
 import { reactive, ref, type Ref } from 'vue';
 
@@ -69,6 +77,7 @@ const states = reactive<SelectStates>({
   selectedOption: initalOption
 })
 const toolTipRef = ref() as Ref<TooltipInstance>
+const inputRef = ref() as Ref<InputInstance>
 
 const isDropdownShow = ref(false)
 
@@ -98,5 +107,6 @@ const itemSelect = (e: SelectOption) => {
   emits('update:modelValue', e.value)
   emits('change', e.value)
   controlDropdown(false)
+  inputRef.value?.ref.focus()
 }
 </script>
