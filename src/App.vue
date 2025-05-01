@@ -13,6 +13,8 @@ import Alert from "./components/Alert/Alert.vue";
 import Input from "./components/Input/Input.vue";
 import Switch from "./components/Switch/Switch.vue";
 import Select from "./components/Select/Select.vue";
+import Form from "./components/Form/Form.vue";
+import FormItem from "./components/Form/FormItem.vue";
 import { createMessage } from "./components/Message/method";
 
 const inputValue = ref("test");
@@ -113,6 +115,20 @@ onMounted(() => {
   </div>
   <div>
     <Select placeholder="请输入" v-model="selectValue" clearable :options="selectOptions" filterable />
+  </div>
+  <div>
+    <Form>
+      <FormItem label="email">
+        <Input type="text" placeholder="请输入" />
+      </FormItem>
+      <FormItem label="password">
+        <Input type="password" placeholder="请输入" />
+      </FormItem>
+      <div>
+        <Button type="primary">Submit</Button>
+        <Button>reset</Button>
+      </div>
+    </Form>
   </div>
 </template>
 
