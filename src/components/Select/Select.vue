@@ -5,7 +5,7 @@
     <Tooltip placement="bottom-start" manual ref="toolTipRef" :popper-options="popperOptions"
       @click-outside="controlDropdown(false)">
       <Input ref="inputRef" type="text" v-model="states.inputValue" :readonly="!filterable || !isDropdownShow"
-        :disabled="disabled" :placeholder="filteredPlaceholder" @input="onFilter">
+        :disabled="disabled" :placeholder="filteredPlaceholder" @input="onDebounceFilter">
       <template #suffix>
         <Icon v-if="showClearIcon" class="vk-input__clear" icon="circle-xmark" @mousedown.prevent="NOOP"
           @click="onClear" />
@@ -13,6 +13,10 @@
       </template>
       </Input>
       <template #content>
+        <div class="vk-select__loading" v-if="states.loading">
+          <Icon icon="spinner" spin />
+        </div>
+        <div class="vk-select__nodata" v-else-if="filterable && filteredOptions.length === 0">no matching data</div>
         <ul class="vk-select__menu">
           <template v-for="(item, index) in filteredOptions" :key="index">
             <li class="vk-select__menu-item" :class="{
@@ -31,7 +35,7 @@
 import type { SelectEmits, SelectOption, SelectProps, SelectStates } from './types'
 import type { TooltipInstance } from '../Tooltip/types'
 import type { InputInstance } from '../Input/types'
-import { isFunction } from 'lodash-es'
+import { isFunction, debounce } from 'lodash-es'
 import Input from '../Input/Input.vue';
 import Tooltip from '../Tooltip/Tooltip.vue';
 import Icon from '../Icon/Icon.vue';
@@ -94,6 +98,10 @@ const toolTipRef = ref() as Ref<TooltipInstance>
 const inputRef = ref() as Ref<InputInstance>
 
 const isDropdownShow = ref(false)
+
+const timeout = computed(() => {
+  return props.filterable ? 300 : 0
+})
 
 const showClearIcon = computed(() => {
   return props.clearable && states.mouseHover && states.inputValue.trim() && states.selectedOption
@@ -175,4 +183,8 @@ const generateFilterOptions = async (searchValue: string) => {
 const onFilter = () => {
   generateFilterOptions(states.inputValue)
 }
+
+const onDebounceFilter = debounce(() => {
+  onFilter()
+}, timeout.value)
 </script>
