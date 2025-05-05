@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, h, onMounted } from "vue";
+import { ref, h, onMounted, reactive } from "vue";
 
 import type { SelectOption } from "./components/Select/types";
 
@@ -20,6 +20,19 @@ import { createMessage } from "./components/Message/method";
 const inputValue = ref("test");
 const switchValue = ref(false);
 const selectValue = ref("");
+
+const formModel = reactive({
+  email: '',
+  password: ''
+})
+const formRules = {
+  email: [
+    { required: true, type: 'email', trigger: 'blur' },
+  ],
+  password: [
+    { required: true, type: 'string', trigger: 'blur' },
+  ]
+}
 
 const selectOptions: SelectOption[] = [
   { label: "hello", value: "1" },
@@ -117,12 +130,12 @@ onMounted(() => {
     <Select placeholder="请输入" v-model="selectValue" clearable :options="selectOptions" filterable />
   </div>
   <div>
-    <Form>
-      <FormItem label="email">
-        <Input type="text" placeholder="请输入" />
+    <Form :model="formModel" :rules="formRules">
+      <FormItem label="email" prop="email">
+        <Input type="text" placeholder="请输入" v-model="formModel.email" />
       </FormItem>
-      <FormItem label="password">
-        <Input type="password" placeholder="请输入" />
+      <FormItem label="password" prop="password">
+        <Input type="password" placeholder="请输入" v-model="formModel.password" />
       </FormItem>
       <div>
         <Button type="primary">Submit</Button>
