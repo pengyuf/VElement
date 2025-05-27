@@ -78,7 +78,7 @@ const NOOP = () => { }
 // 表单验证
 const formItemContext = inject(formItemContextKey)
 const runValidate = (trigger?: string) => {
-  formItemContext?.validate(trigger)
+  formItemContext?.validate(trigger).catch((e)=>console.log(e.errors))
 }
 
 

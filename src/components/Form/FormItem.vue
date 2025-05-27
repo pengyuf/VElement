@@ -2,7 +2,8 @@
   <div class="vk-form-item" :class="{
     'is-success': validateStatus.status === 'success',
     'is-error': validateStatus.status === 'error',
-    'is-loading': validateStatus.loading
+    'is-loading': validateStatus.loading,
+    'is-required': isRequired
   }">
     <label class="vk-form-item__lable">
       <slot name="label" :label="label">{{ label }}</slot>
@@ -17,7 +18,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, inject, onMounted, onUnmounted, provide, reactive } from 'vue';
-import { formItemContextKey, type FormItemContext, formContextKey, type FormItemProps, type FormValidateFailure } from './types'
+import { formItemContextKey, type FormItemContext, formContextKey, type FormItemProps, type FormValidateFailure, type ValidateStatusProp, type FormItemInstance } from './types'
 import Schema from 'async-validator';
 
 
@@ -26,14 +27,25 @@ const formContext = inject(formContextKey)
 
 const props = defineProps<FormItemProps>()
 
-const validateStatus = reactive({
+const validateStatus = reactive<ValidateStatusProp>({
   status: 'init',
   errorMsg: '',
-  loading: false
+  loading: false,
 })
 
 
-let initialValue: null = null
+let initialValue: any = null
+
+const isRequired = computed(() => {
+  const rules = itemRules.value
+  if (rules) {
+    return rules.some((rule) => {
+      return rule.required
+    })
+  } else {
+    return false
+  }
+})
 
 const innerValue = computed(() => {
   const model = formContext?.model
@@ -66,7 +78,7 @@ const getTriggerRules = (trigger?: string) => {
   }
 }
 
-const validate = (trigger?: string) => {
+const validate = async (trigger?: string) => {
   const modelName = props.prop
   const triggerRules = getTriggerRules(trigger)
   if (triggerRules.length === 0) return true
@@ -127,6 +139,13 @@ onUnmounted(() => {
 
 defineOptions({
   name: 'VkFormItem'
+})
+
+defineExpose<FormItemInstance>({
+  validateStatus,
+  resetField,
+  clearValidate,
+  validate,
 })
 
 </script>
