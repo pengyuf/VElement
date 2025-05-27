@@ -24,6 +24,22 @@ const removeField = (field: FormItemContext) => {
   }
 }
 
+
+const resetFields = (keys: string[] = []) => {
+  const filterArr = keys.length > 0 ? fields.filter((field) => keys.includes(field.prop)) : fields
+  filterArr.forEach((field) => {
+    field.resetField()
+  })
+}
+
+const clearValidate = (keys: string[] = []) => {
+  const filterArr = keys.length > 0 ? fields.filter((field) => keys.includes(field.prop)) : fields
+  filterArr.forEach((field) => {
+    field.clearValidate()
+  })
+}
+
+
 const validate = async () => {
   let validationErrors: ValidateFieldsError = {}
   for (const field of fields) {
@@ -37,7 +53,7 @@ const validate = async () => {
       }
     }
   }
-  if(Object.keys(validationErrors).length === 0) return true
+  if (Object.keys(validationErrors).length === 0) return true
   return Promise.reject(validationErrors)
 }
 
@@ -48,7 +64,9 @@ defineOptions({
 })
 
 defineExpose<FormInstance>({
-  validate
+  validate,
+  resetFields,
+  clearValidate
 })
 
 </script>

@@ -32,6 +32,9 @@ const validateStatus = reactive({
   loading: false
 })
 
+
+let initialValue: null = null
+
 const innerValue = computed(() => {
   const model = formContext?.model
   if (model && props.prop && model[props.prop]) {
@@ -89,21 +92,37 @@ const validate = (trigger?: string) => {
   }
 }
 
+const clearValidate = () => {
+  validateStatus.status = 'init'
+  validateStatus.errorMsg = ''
+  validateStatus.loading = false
+}
+
+const resetField = () => {
+  clearValidate()
+  const model = formContext?.model
+  if (model && props.prop && model[props.prop]) {
+    model[props.prop] = initialValue
+  }
+}
 
 const context: FormItemContext = {
   validate,
-  prop: props.prop || ''
+  prop: props.prop || '',
+  resetField,
+  clearValidate,
 }
 provide(formItemContextKey, context)
 
 onMounted(() => {
+  initialValue = innerValue.value
   if (props.prop) {
     formContext?.addField(context)
   }
 })
 
 onUnmounted(() => {
-    formContext?.removeField(context)
+  formContext?.removeField(context)
 })
 
 defineOptions({
