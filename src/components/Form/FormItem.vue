@@ -13,12 +13,11 @@
         <span>{{ validateStatus.errorMsg }}</span>
       </div>
     </div>
-    <button @click.prevent="validate">验证</button>
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, inject, reactive } from 'vue';
-import { formContextKey, type FormItemProps, type FormValidateFailure } from './types'
+import { computed, inject, provide, reactive } from 'vue';
+import { formItemContextKey, type FormItemContext, formContextKey, type FormItemProps, type FormValidateFailure } from './types'
 import Schema from 'async-validator';
 
 
@@ -51,11 +50,26 @@ const itemRules = computed(() => {
   }
 })
 
-const validate = () => {
+
+const getTriggerRules = (trigger?: string) => {
+  const rules = itemRules.value
+  if (rules) {
+    return rules.filter((rule) => {
+      if (!rule.trigger || !trigger) return true
+      return rule.trigger && rule.trigger === trigger
+    })
+  } else {
+    return []
+  }
+}
+
+const validate = (trigger?: string) => {
   const modelName = props.prop
+  const triggerRules = getTriggerRules(trigger)
+  if (triggerRules.length === 0) return true
   if (modelName) {
     const validator = new Schema({
-      [modelName]: itemRules.value
+      [modelName]: triggerRules
     })
     validateStatus.loading = true
     validator.validate({
@@ -73,6 +87,12 @@ const validate = () => {
     })
   }
 }
+
+
+const context: FormItemContext = {
+  validate
+}
+provide(formItemContextKey, context)
 
 defineOptions({
   name: 'VkFormItem'

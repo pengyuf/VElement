@@ -28,6 +28,7 @@ const formModel = reactive({
 const formRules = {
   email: [
     { required: true, type: 'email', trigger: 'blur' },
+    { required: true, type: 'string', trigger: 'input' },
   ],
   password: [
     { required: true, type: 'string', trigger: 'blur' },
