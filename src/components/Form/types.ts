@@ -17,18 +17,24 @@ export interface FormProps {
   rules: FormRules
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface FormContext extends FormProps {
 
+export interface FormContext extends FormProps {
+addField:(field:FormItemContext)=>void
+removeField:(field:FormItemContext)=>void
 }
 
 export interface FormItemContext{
+  prop:string
   validate:(trigger?:string)=>any
 }
 
 export interface FormValidateFailure {
   errors: ValidateError[] | null
   fields: ValidateFieldsError
+}
+
+export interface FormInstance {
+  validate:()=>Promise<any>
 }
 
 export const formContextKey: InjectionKey<FormContext> = Symbol('formContextKey')

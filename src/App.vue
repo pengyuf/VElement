@@ -34,6 +34,10 @@ const formRules = {
     { required: true, type: 'string', trigger: 'blur' },
   ]
 }
+const formRef = ref()
+const validateForm = ()=>{
+  formRef.value?.validate()
+}
 
 const selectOptions: SelectOption[] = [
   { label: "hello", value: "1" },
@@ -131,7 +135,7 @@ onMounted(() => {
     <Select placeholder="请输入" v-model="selectValue" clearable :options="selectOptions" filterable />
   </div>
   <div>
-    <Form :model="formModel" :rules="formRules">
+    <Form ref="formRef" :model="formModel" :rules="formRules">
       <FormItem label="email" prop="email">
         <Input type="text" placeholder="请输入" v-model="formModel.email" />
       </FormItem>
@@ -143,6 +147,7 @@ onMounted(() => {
         <Button>reset</Button>
       </div>
     </Form>
+    <button @click.prevent="validateForm">整体验证</button>
   </div>
 </template>
 

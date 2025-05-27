@@ -16,7 +16,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, inject, provide, reactive } from 'vue';
+import { computed, inject, onMounted, onUnmounted, provide, reactive } from 'vue';
 import { formItemContextKey, type FormItemContext, formContextKey, type FormItemProps, type FormValidateFailure } from './types'
 import Schema from 'async-validator';
 
@@ -72,7 +72,7 @@ const validate = (trigger?: string) => {
       [modelName]: triggerRules
     })
     validateStatus.loading = true
-    validator.validate({
+    return validator.validate({
       [modelName]: innerValue.value
     }).then(() => {
       console.log('success')
@@ -82,6 +82,7 @@ const validate = (trigger?: string) => {
       const { errors } = e
       validateStatus.status = 'error'
       validateStatus.errorMsg = (errors && errors.length > 0) ? errors[0].message || '' : ''
+      return Promise.reject(e)
     }).finally(() => {
       validateStatus.loading = false
     })
@@ -90,9 +91,20 @@ const validate = (trigger?: string) => {
 
 
 const context: FormItemContext = {
-  validate
+  validate,
+  prop: props.prop || ''
 }
 provide(formItemContextKey, context)
+
+onMounted(() => {
+  if (props.prop) {
+    formContext?.addField(context)
+  }
+})
+
+onUnmounted(() => {
+    formContext?.removeField(context)
+})
 
 defineOptions({
   name: 'VkFormItem'
